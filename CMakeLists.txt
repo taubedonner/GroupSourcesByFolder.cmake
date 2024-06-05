@@ -1,4 +1,3 @@
-
 function(GroupSourcesByFolder target)
   set(SOURCE_GROUP_DELIMITER "/")
   set(last_dir "")
@@ -7,7 +6,12 @@ function(GroupSourcesByFolder target)
   get_target_property(sources ${target} SOURCES)
 
   foreach(file ${sources})
-    file(RELATIVE_PATH relative_file "${PROJECT_SOURCE_DIR}" ${file})
+    cmake_path(IS_ABSOLUTE file file_is_absolute)
+    if(file_is_absolute)
+      file(RELATIVE_PATH relative_file "${PROJECT_SOURCE_DIR}" ${file})
+    else()
+      set(relative_file ${file})
+    endif()
     get_filename_component(dir "${relative_file}" PATH)
     if(NOT "${dir}" STREQUAL "${last_dir}")
       if(files)
